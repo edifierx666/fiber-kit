@@ -1,4 +1,4 @@
-package jwtMiddleware
+package middleware
 
 import (
   "errors"
@@ -146,8 +146,8 @@ var (
   }
 )
 
-// New returns a JWT auth middleware with config.
-func New(cfgs ...*Config) fiber.Handler {
+// JWT returns a JWT auth middleware with config.
+func JWT(cfgs ...*Config) fiber.Handler {
   var config *Config
   config = &DefaultJWTConfig
   if len(cfgs) > 0 {

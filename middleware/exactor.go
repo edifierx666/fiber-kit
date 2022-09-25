@@ -1,4 +1,4 @@
-package jwtMiddleware
+package middleware
 
 import (
   "errors"
