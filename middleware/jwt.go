@@ -12,8 +12,8 @@ import (
 )
 
 type (
-  // Config defines the config for JWT middleware.
-  Config struct {
+  // JWTConfig defines the config for JWT middleware.
+  JWTConfig struct {
     // Skipper defines a function to skip middleware.
     Skipper func(c *fiber.Ctx) bool
 
@@ -132,7 +132,7 @@ var (
 
 var (
   // DefaultJWTConfig is the default JWT auth middleware config.
-  DefaultJWTConfig = Config{
+  DefaultJWTConfig = JWTConfig{
     Skipper: func(c *fiber.Ctx) bool {
       return false
     },
@@ -147,8 +147,8 @@ var (
 )
 
 // JWT returns a JWT auth middleware with config.
-func JWT(cfgs ...*Config) fiber.Handler {
-  var config *Config
+func JWT(cfgs ...*JWTConfig) fiber.Handler {
+  var config *JWTConfig
   config = &DefaultJWTConfig
   if len(cfgs) > 0 {
     config = cfgs[0]
@@ -244,7 +244,7 @@ func JWT(cfgs ...*Config) fiber.Handler {
   }
 }
 
-func (config *Config) defaultParseToken(auth string, c *fiber.Ctx) (interface{}, error) {
+func (config *JWTConfig) defaultParseToken(auth string, c *fiber.Ctx) (interface{}, error) {
   token := new(jwt.Token)
   var err error
   // Issue #647, #656
@@ -265,7 +265,7 @@ func (config *Config) defaultParseToken(auth string, c *fiber.Ctx) (interface{},
 }
 
 // defaultKeyFunc returns a signing key of the given token.
-func (config *Config) defaultKeyFunc(t *jwt.Token) (interface{}, error) {
+func (config *JWTConfig) defaultKeyFunc(t *jwt.Token) (interface{}, error) {
   // Check the signing method
   if t.Method.Alg() != config.SigningMethod {
     return nil, fmt.Errorf("unexpected jwt signing method=%v", t.Header["alg"])
@@ -282,7 +282,7 @@ func (config *Config) defaultKeyFunc(t *jwt.Token) (interface{}, error) {
   return config.SigningKey, nil
 }
 
-func createExtractors(cfg *Config) []jwtExtractor {
+func createExtractors(cfg *JWTConfig) []jwtExtractor {
   // Initialize
   extractors := make([]jwtExtractor, 0)
   rootParts := strings.Split(cfg.TokenLookup, ",")
